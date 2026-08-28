@@ -1,5 +1,5 @@
 # Eleventy output directory
-_src/
+_site/
 
 # Node dependencies
 node_modules/
