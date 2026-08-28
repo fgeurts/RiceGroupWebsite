@@ -9,6 +9,6 @@ Next steps will take more advantage of Eleventy's capabilities to format items s
 * the command `npx @11ty/eleventy --serve` that i keep on forgetting for testing my site at [http://localhost:8080]
 
 On my to-do list:
-* convert and migrate news section
 * convert and migrate outreach section
+* where appropriate use @11ty-native approaches, replacing old RW css dependencies
 
