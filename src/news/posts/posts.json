@@ -1,0 +1,5 @@
+{
+  "layout": "layouts/base.njk",
+  "tags": ["news"],
+  "permalink": "/news/{{ date | date: '%Y/%m/%d' }}/{{ page.fileSlug }}/index.html"
+}
