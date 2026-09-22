@@ -4,9 +4,13 @@ module.exports = function(eleventyConfig) {
     "src/rw_common/themes/realmacsoftware06/consolidated.css": "assets/css/consolidated.css",
     "src/rw_common/themes/realmacsoftware06/images": "assets/img",
     "src/files": "assets/img",
-    "src/news/files": "news/files"
+    "src/news/files": "news/files",
+    "src/outreach/files": "outreach/files"
   });
 
+  // Outreach keeps its images next to the pages that use them
+  eleventyConfig.addPassthroughCopy("src/outreach/**/*.{jpg,jpeg,png,gif,pdf}");
+    
   // Custom date filter for Nunjucks templates
   eleventyConfig.addFilter("date", (dateObj, format = "%b %d, %Y") => {
     const d = new Date(dateObj);

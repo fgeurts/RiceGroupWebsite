@@ -42,5 +42,9 @@
       { "title": "Past Workshops", "url": "/local/workshops/" }
     ]
   },
-  { "title": "Outreach", "url": "/outreach/" }
+  {"title": "Outreach", "url": "/outreach/", "children": [
+      { "title": "QuarkNet", "url": "/outreach/quarknet/workshops.html" },
+      { "title": "Masterclasses", "url": "/outreach/quarknet/masterclasses.html" }
+    ]
+  }
 ]

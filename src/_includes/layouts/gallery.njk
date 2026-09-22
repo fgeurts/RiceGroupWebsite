@@ -1,0 +1,20 @@
+---
+layout: layouts/base.njk
+---
+<div class="album-title">{{ albumTitle or title }}</div>
+<div class="album-description">{{ albumDescription or "" }}</div>
+
+<div class="album-wrapper">
+{% for photo in album %}
+	<div class="thumbnail-wrap" style="width:{{ thumbSize or 268 }}px; height:{{ thumbSize or 268 }}px;">
+		<div class="thumbnail-frame" style="width:{{ thumbSize or 268 }}px;">
+			<a href="{{ photo.full }}"><img src="{{ photo.thumb }}" alt="{{ photo.alt }}" width="{{ photo.width }}" height="{{ photo.height }}" /></a>
+			<p class="thumbnail-caption">{{ photo.caption | safe }}</p>
+		</div>
+	</div>
+{% endfor %}
+</div>
+
+<div class="clearer"></div>
+
+{{ content | safe }}
