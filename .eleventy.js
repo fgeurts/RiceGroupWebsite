@@ -8,6 +8,9 @@ module.exports = function(eleventyConfig) {
     "src/outreach/files": "outreach/files"
   });
 
+  // Pass-through this original file from the STAR Collaboration
+    eleventyConfig.addPassthroughCopy("src/CodeOfConduct.html");
+    
   // Outreach keeps its images next to the pages that use them
   eleventyConfig.addPassthroughCopy("src/outreach/**/*.{jpg,jpeg,png,gif,pdf}");
     
