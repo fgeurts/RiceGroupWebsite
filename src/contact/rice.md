@@ -17,7 +17,7 @@ Rice's central Houston location is accessible by air, car and public transportat
 
 Houston has two airports: William P. Hobby (HOU), 11 miles to the south of campus and George Bush Intercontinental (IAH), 24 miles to the north. Intercontinental is a hub of global travel. Hobby is a hub for regional, domestic travel. Together they offer 1,000 flights a day in and out of Houston.
 
-Most major rental car companies have locations at both airports. [SuperShuttle](http://www.supershuttle.com/) and taxis provide ground transportation services from both airports. Ride-share services are available from both airports and range between $40 - $65.
+Most major rental car companies have locations at both airports. [SuperShuttle](http://www.supershuttle.com/) and taxis provide ground transportation services from both airports. Ride-share services are available from both airports and range between $50 - $75.
 
 ### Driving Directions:
 
