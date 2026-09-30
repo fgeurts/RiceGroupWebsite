@@ -10,4 +10,4 @@ Next steps will take more advantage of Eleventy's capabilities to format items s
 
 On my to-do list:
 * where appropriate use @11ty-native approaches, replacing old RW css dependencies
-* set up CI for auto-deployment
+
