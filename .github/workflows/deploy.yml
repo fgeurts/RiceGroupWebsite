@@ -152,6 +152,7 @@ jobs:
 
         run: |
           curl \
+            --insecure \
             --fail \
             --silent \
             --show-error \
