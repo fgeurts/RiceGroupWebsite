@@ -1,0 +1,164 @@
+name: Build and Deploy Eleventy Site
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+concurrency:
+  group: production-deployment
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and deploy website
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # --------------------------------------------------
+      # 1. Get the website source from GitHub
+      # --------------------------------------------------
+
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+
+      # --------------------------------------------------
+      # 2. Install the Node version specified by .nvmrc
+      # --------------------------------------------------
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+          cache: npm
+
+
+      # --------------------------------------------------
+      # 3. Install exactly the dependencies in package-lock.json
+      # --------------------------------------------------
+
+      - name: Install dependencies
+        run: npm ci
+
+
+      # --------------------------------------------------
+      # 4. Build the Eleventy website
+      # --------------------------------------------------
+
+      - name: Build Eleventy site
+        run: npm run build
+
+
+      # --------------------------------------------------
+      # 5. Make sure the build actually produced a website
+      # --------------------------------------------------
+
+      - name: Verify build
+        run: |
+          test -d _site
+          test -f _site/index.html
+
+          echo "Build directory:"
+          du -sh _site
+
+          echo "Number of files:"
+          find _site -type f | wc -l
+
+
+      # --------------------------------------------------
+      # 6. Install the SSH private key
+      # --------------------------------------------------
+
+      - name: Configure SSH
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+
+        run: |
+          install -m 700 -d "$HOME/.ssh"
+
+          printf '%s\n' "$DEPLOY_SSH_KEY" \
+            > "$HOME/.ssh/deploy_key"
+
+          chmod 600 "$HOME/.ssh/deploy_key"
+
+          cp .github/known_hosts \
+            "$HOME/.ssh/known_hosts"
+
+          chmod 644 "$HOME/.ssh/known_hosts"
+
+
+      # --------------------------------------------------
+      # 7. Test the SSH connection
+      # --------------------------------------------------
+
+      - name: Test SSH connection
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
+
+        run: |
+          ssh \
+            -i "$HOME/.ssh/deploy_key" \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            -p "$DEPLOY_PORT" \
+            "$DEPLOY_USER@$DEPLOY_HOST" \
+            'printf "Connected as: "; whoami; printf "Server: "; hostname'
+
+
+      # --------------------------------------------------
+      # 8. Deploy the finished _site directory
+      # --------------------------------------------------
+
+      - name: Deploy website
+        env:
+          DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ vars.DEPLOY_USER }}
+          DEPLOY_PORT: ${{ vars.DEPLOY_PORT }}
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+
+        run: |
+          rsync \
+            --archive \
+            --compress \
+            --delete-after \
+            --itemize-changes \
+            -e "ssh \
+              -i $HOME/.ssh/deploy_key \
+              -o IdentitiesOnly=yes \
+              -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile=$HOME/.ssh/known_hosts \
+              -p $DEPLOY_PORT" \
+            _site/ \
+            "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
+
+
+      # --------------------------------------------------
+      # 9. Check that the public website responds
+      # --------------------------------------------------
+
+      - name: Smoke test website
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            "$SITE_URL/" \
+            > /dev/null
+
+          echo "Website is responding."
+
